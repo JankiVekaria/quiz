@@ -14,13 +14,6 @@ const quizData = [
         d: 'PHP',
         correct: 'c'
     },{
-        question: 'Who is the president of US?',
-        a: 'Florin',
-        b: 'Donald Trump',
-        C: 'Barak Obama',
-        d: 'Mihai',
-        correct: 'b'
-    },{
         question: 'What does HTML stand for?',
         a: 'Hypertext Markup Language',
         b: 'Cascading Style sheet',
@@ -36,7 +29,8 @@ const quizData = [
         correct: 'c'
     }
 ];
-
+const answerEls = document.querySelectorAll(".answer");
+const quiz = document.getElementById('quiz');
 const questionEl = document.getElementById('question');
 const a_text = document.getElementById('a_text');
 const b_text = document.getElementById('b_text');
@@ -49,6 +43,7 @@ let score =0;
 loadQuiz();
 
 function loadQuiz(){
+    deselectAnswers();
     const currentQuizData = quizData[currentQuiz];
 
     questionEl.innerHTML = currentQuizData.question;
@@ -58,35 +53,42 @@ function loadQuiz(){
     d_text.innerText = currentQuizData.d;
 }
 function getSelected(){
-    const answerEls = document.querySelectorAll('.answer');
+
+    let answer = undefined;
 
     answerEls.forEach((answerEl) => {
         if(answerEl.checked){
-            return answerEl.id;
+            answer = answerEl.id;
         }
     });
 
-    return undefined;
+    return answer;
+}
+
+function deselectAnswers(){
+    answerEls.forEach((answerEl) => {
+        answerEl.checked = false;
+    });
 }
 
 submitBtn.addEventListener('click', () => {
     //check to see the answer
     const answer = getSelected();
+    console.log(answer);
     if(answer){
-        if(answer && answer=== quizData[currentQuiz]){
-            currentQuiz++;
+        if(answer === quizData[currentQuiz].correct){
+            score++;
         }
-    
 
-    
-
-    
+        currentQuiz++;
         if(currentQuiz < quizData.length){
-                loadQuiz();
+            loadQuiz();
         }else{
-                //TODO: show results
-                alert('You finished!');
+            // //TODO: show results
+            // alert('You finished!');
+            quiz.innerHTML = `<h2>You answered correctly at ${score}/${quizData.length} questions.</h2>
+            
+            <button onclick = "location.reload()">Reload</button>`
         }
     }
-    
-});
+})
